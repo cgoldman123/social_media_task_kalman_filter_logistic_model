@@ -1,0 +1,27 @@
+#!/bin/bash
+#
+#SBATCH --partition=c3
+#SBATCH --ntasks=1
+#SBATCH --mem=20000
+#SBATCH --nodes=1
+#SBATCH --begin=now
+#SBATCH --chdir=/media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/scripts/
+
+#
+#################################################
+
+RESULTS=$1
+export RESULTS
+
+MODEL=$2
+export MODEL
+
+ROOM=$3
+export ROOM
+
+EXPERIMENT=$4
+export EXPERIMENT
+
+module load matlab/2022a
+run_file='/media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/scripts/Social_wrapper.m'
+matlab -nodisplay -nosplash < ${run_file}
