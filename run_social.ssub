@@ -22,6 +22,7 @@ export ROOM
 EXPERIMENT=$4
 export EXPERIMENT
 
+module load JAGS/4.3.0-foss-2021a
 module load matlab/2022a
 run_file='/media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/scripts/Social_wrapper.m'
 matlab -nodisplay -nosplash < ${run_file}

@@ -8,10 +8,11 @@ ssub_path = '/media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/scri
 
 room_type = ["Like", "Dislike"]
 model_type = ["kf","logistic"]
+model_type = ["kf"]
 for room in room_type:
     for model in model_type:
 
-        results = result_stem + experiment + "/" + model + "/"
+        results = result_stem + experiment + "/" + model + "/" + room + "/"
         
         if not os.path.exists(results):
             os.makedirs(results)
@@ -31,4 +32,5 @@ for room in room_type:
 
         print(f"SUBMITTED JOB [{jobname}]")
 
-# python3 /media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/scripts/runall_social.py /media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/output/SM_fits_7-24-24/ "prolific"
+# remember that logistic model output will save in rsmith/wellbeing/tasks/SocialMedia/output!
+# python3 /media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/scripts/runall_social.py /media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/output/SM_fits_local_7-26-24/ "local"

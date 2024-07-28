@@ -1,5 +1,6 @@
 function varargout = get_fits(root,study,model,room_type, results_dir)
 
+    disp(root);disp(study);disp(model);disp(room_type);disp(results_dir);
     %% Import matjags library and model-specific fitting function
     addpath([root 'rsmith/all-studies/core/matjags']);
     addpath([root 'rsmith/all-studies/models/extended-horizon']);
@@ -54,11 +55,15 @@ function varargout = get_fits(root,study,model,room_type, results_dir)
                    if j>1
                       has_practice_effects = 1;
                    end
-                   try
-                        data = fit_social_genmeans(file, subject, ses, room_type, [], study);
-                   catch
-                       continue
-                   end
+                try
+                    data = fit_social_genmeans(file, subject, ses, room_type, [], study);
+                catch ME
+                    disp('An error occurred:');
+                    disp(ME.message);
+                    disp('Error occurred in:');
+                    disp(ME.stack(1));  % This displays where in the code the error occurred
+                    continue
+                end
                    used = [used subject];
                    data.has_practice_effects = has_practice_effects;
                    writetable(data, [results_dir 'old_model-' subject{:} '-' room_type '-fit.csv']);
@@ -69,7 +74,7 @@ function varargout = get_fits(root,study,model,room_type, results_dir)
         %% Clean up files and concatenate for fitting
         timestamp = datestr(datetime('now'), 'mm_dd_yy_THH-MM-SS');
         [big_table, subj_mapping, flag] = Social_merge(subs, files, room_type, study);
-        outpath_beh = sprintf([results_dir 'beh_%s'], timestamp);
+        outpath_beh = sprintf([results_dir 'beh_%s_%s_%s.csv'], study, room_type, timestamp);
         writetable(big_table, outpath_beh);
 
         %% Perform model fit
@@ -82,10 +87,10 @@ function varargout = get_fits(root,study,model,room_type, results_dir)
             model_output(i).results.cb = subj_mapping{i, 3};  
         end
         varargout{1} = model_output;
-        save(sprintf([results_dir 'model_output_%s.mat'], timestamp),'model_output');
+        save(sprintf([results_dir 'model_output_%s_%s.mat'], room_type, timestamp),'model_output');
         fits.id = vertcat(subj_mapping{:, 1});
         fits.has_practice_effects = (ismember(string(fits.id), flag));
-        outpath_fits = sprintf([results_dir 'fits_%s.csv'], timestamp);
+        outpath_fits = sprintf([results_dir 'fits_%s_%s.csv'], room_type, timestamp);
         writetable(fits, outpath_fits);
     end
 end

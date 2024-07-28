@@ -88,13 +88,13 @@ function model_output = model_KFcond_v2_SMT_CMG(params, free_choices, rewards, m
             alpha1(T+2) = 1/( 1/(alpha1(T+1) + alpha_d) + 1 );
             exp_vals(T+1,g) = mu1(T+1);
             pred_errors(T+1,g) = (rewards(T+1,g) - exp_vals(T+1,g));
-            alpha(T+1,g) = alpha1(t+1);
+            alpha(T+1,g) = alpha1(T+2);
             pred_errors_alpha(T+1,g) = alpha1(T+2) * pred_errors(T+1,g); % confirm that alpha here should be t+1
         else
             alpha2(T+2) = 1/( 1/(alpha2(T+1) + alpha_d) + 1 );
             exp_vals(T+1,g) = mu2(T+1);
             pred_errors(T+1,g) = (rewards(T+1,g) - exp_vals(T+1,g));
-            alpha(T+1,g) = alpha2(t+1);
+            alpha(T+1,g) = alpha2(T+2);
             pred_errors_alpha(T+1,g) = alpha2(T+2) * pred_errors(T+1,g);
         end
 

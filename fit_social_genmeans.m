@@ -25,9 +25,10 @@ function ff = fit_social_genmeans(file,subject, ses, room_type, input_dir, study
     
     
     
-    
     orgfunc = str2func(['Social_' study '_organize']);
     subj_data = orgfunc(file{:}, schedule, room_type);
+    
+    % for debugging: disp(subj_data);disp(file{:});disp(ses); disp(room_type);
     data = parse_table(subj_data, file{:}, ses, 80, room_type);
         
     ff = fit_horizon(data, ses, room_type);

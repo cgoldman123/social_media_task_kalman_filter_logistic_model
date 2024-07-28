@@ -108,7 +108,7 @@ function data = parse_table(table, subject, run, num_runs, room_type)
         true_correct_count = sum(key(5:end) == max_true_side) / (gameLength - 4);
         subs = regexp(subject, '[A-Z]{2}[0-9]{3}', 'match');
         if isempty(subs)
-            subs = extractBetween(subject, 'social_media_', '_T1');
+            subs = extractBetween(subject, 'social_media_', '_T');
         end
 
         data(game_number + 1) = struct(         ...

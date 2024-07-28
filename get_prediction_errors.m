@@ -1,4 +1,13 @@
-function all_pred_errors = get_prediction_errors(model_outputs)
+function all_pred_errors = get_prediction_errors()
+    model_outputs = struct();
+    for r = {'Like', 'Dislike'}
+        directoryPath = ['L:\rsmith\lab-members\cgoldman\Wellbeing\social_media\output\SM_fits_local_7-26-24\local\kf\' r{1}];
+        % Get a list of all .mat files in the directory that contain 'model_output'
+        files = dir(fullfile(directoryPath, '*model_output*.mat'));
+        model_output = load(fullfile(directoryPath, files(1).name));
+        model_outputs.(r{1}) = model_output.model_output;
+    end
+
     NS = length(model_outputs.Like); 
     all_pred_errors = table();
 
@@ -123,6 +132,8 @@ function all_pred_errors = get_prediction_errors(model_outputs)
         all_pred_errors = vertcat(all_pred_errors, struct2table(pred_error_table));
     end
 
-
+    timestamp = datestr(datetime('now'), 'mm_dd_yy_THH-MM-SS');
+    outpath = sprintf(['L:/rsmith/wellbeing/tasks/SocialMedia/output/local/kf/pred_errors_%s.csv'], timestamp);
+    writetable(all_pred_errors, outpath);
 
 end

@@ -1,18 +1,27 @@
 function [fits, model_output] = fit_extended_model(formatted_file, result_dir)
+    if ispc
+        root = 'L:/';
+    else
+        root = '/media/labs/';
+    end
+    fprintf('Using this formatted_file: %s\n',formatted_file);
+
     %formatted_file = 'L:\rsmith\wellbeing\tasks\SocialMedia\output\prolific\kf\beh_Dislike_06_03_24_T16-03-52.csv';  %% remember to comment out
-    addpath(['L:/rsmith/all-studies/core/matjags']);
-    addpath(['L:/rsmith/all-studies/models/extended-horizon']);
-    addpath('C:\Users\CGoldman\AppData\Local\Programs\JAGS\JAGS-4.3.1\x64\bin');
-    addpath('C:\Users\CGoldman\AppData\Local\Programs\JAGS');
+    %addpath(['L:/rsmith/all-studies/core/matjags']);
+    %addpath(['L:/rsmith/all-studies/models/extended-horizon']);
+    %addpath('C:\Users\CGoldman\AppData\Local\Programs\JAGS\JAGS-4.3.1\x64\bin');
+    %addpath('C:\Users\CGoldman\AppData\Local\Programs\JAGS');
+    addpath([root 'rsmith/lab-members/cgoldman/general/']);
+    %addpath('~/Documents/MATLAB/MatJAGS/');
+
 
     
     fundir      = pwd;%[maindir 'TMS_code/'];
     datadir     = pwd;%[maindir 'TMS_code/'];
     savedir     = pwd;%[maindir];
     addpath(fundir);
-    addpath('~/Documents/MATLAB/MatJAGS/');
     cd(fundir);
-    defaultPlotParameters
+    %defaultPlotParameters
 
 %     sub = load_TMS_v1([datadir '/EIT_HorizonTaskOutput_HierarchicalModelFormat_v2.csv']);
     sub = load_TMS_v1(formatted_file);

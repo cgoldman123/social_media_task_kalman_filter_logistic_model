@@ -13,7 +13,7 @@ if ispc
     experiment = 'prolific'; % indicate local or prolific
     room = 'Like';
     model = 'kf';
-    results_dir = sprintf([root 'rsmith/lab-members/cgoldman/Wellbeing/social_media/output/%s/%s'], experiment, model);
+    results_dir = sprintf([root 'rsmith/lab-members/cgoldman/Wellbeing/social_media/output/%s/%s/'], experiment, model);
 
 elseif ismac
     root = '/Volumes/labs/';
@@ -33,6 +33,10 @@ end
 % model = 'new'; %old or new
 
 get_fits(root, experiment, model, room, results_dir);
+
+
+
+
 
 % for mm = {'new', 'old'}
 %     if strcmp(mm, 'new')
