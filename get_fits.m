@@ -26,9 +26,13 @@ function varargout = get_fits(root,study,model,room_type, results_dir)
             sink = fullfile(root, ['NPC/DataSink/StimTool_Online/WB_Social_Media' cb{:}]);
             datadir = dir(sink);
             sDir = datadir(arrayfun(@(n) contains(n.name, 'social_media'), datadir));
+            % Sort sDir by date (datenum) in ascending order to process files from oldest to most recent
+            [~, idx] = sort([sDir.datenum]);
+            sDir = sDir(idx);
             for file = sDir'
                 sub = extractBetween(file.name, 'social_media_', '_T');
-                if ~isempty(sub) && ~ismember(sub, bad_ids)
+                if ~isempty(sub) && ~ismember(sub, bad_ids) && numel(sub{:}) == 24
+                %if strcmp(sub{:},'562eb896733ea000051638c6')
                     fullFilePath = fullfile(file.folder, file.name);
                     files{end+1} = fullFilePath; % Ensure 'files' is initialized as an empty cell array before the loop.
                     subs{end+1} = sub;
@@ -36,12 +40,19 @@ function varargout = get_fits(root,study,model,room_type, results_dir)
             end
         end
     end
-    %% Uncomment these lines but for some reason they are not working for me!!!
-%     [~,order] = sort(arrayfun(@(n) datetime(extractBetween(files{n},['_T1' cb '_'],'.'), 'InputFormat', 'yyyy-MM-dd_HH''h''mm'), 1:numel(files)));
-%     files=files(order); 
-    %% Read in schedule for data organizing
-    %schedule = readtable(['../schedules/sm_distributed_schedule1' cb '.csv']);
-    
+
+    % print out subjects with more than one behavioral file
+    subs_string = string(subs);
+    files_string = string(files);
+    [uniqueStrings, ~, ic] = unique(subs_string);
+    occurrences = accumarray(ic, 1);
+    duplicateIndices = find(occurrences > 1);
+    duplicates = uniqueStrings(duplicateIndices);
+    disp('Duplicated entries are:');
+    for i = 1:length(duplicates)
+        disp(duplicates(i));
+    end
+
     if strcmp(model, 'logistic')
         used={};
         for i = 1:length(subs)
@@ -74,6 +85,21 @@ function varargout = get_fits(root,study,model,room_type, results_dir)
         %% Clean up files and concatenate for fitting
         timestamp = datestr(datetime('now'), 'mm_dd_yy_THH-MM-SS');
         [big_table, subj_mapping, flag] = Social_merge(subs, files, room_type, study);
+        
+        % ensure that no subject in big_table has repeated data
+        [uniqueStrings, ~, ic] = unique(string(subj_mapping(:,1)));
+        occurrences = accumarray(ic, 1);
+        duplicateIndices = find(occurrences > 1);
+        duplicates = uniqueStrings(duplicateIndices);
+        disp('Duplicated entries in big_data are:');
+        % should be none
+        for i = 1:length(duplicates)
+            disp(duplicates(i));
+        end
+        
+        
+       
+        
         outpath_beh = sprintf([results_dir 'beh_%s_%s_%s.csv'], study, room_type, timestamp);
         writetable(big_table, outpath_beh);
 

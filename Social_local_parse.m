@@ -1,8 +1,15 @@
-function final_table = Social_local_parse(subject, schedule, room_type, study)
+function [final_table, started_game] = Social_local_parse(subject, schedule, room_type, study)
     orgfunc = str2func(['Social_' study '_organize']);
     try
+        subj_data = readtable(subject, 'PreserveVariableNames', true);
+        if sum(find(ismember(subj_data.trial_type,'MAIN')))
+            started_game = 1;
+        else
+            started_game = 0;
+        end
         data = orgfunc(subject, schedule, room_type);
     catch
+        started_game = 0;
         final_table = [];
         return
     end
