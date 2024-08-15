@@ -33,4 +33,4 @@ for room in room_type:
         print(f"SUBMITTED JOB [{jobname}]")
 
 # remember that logistic model output will save in rsmith/wellbeing/tasks/SocialMedia/output!
-# python3 /media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/scripts/runall_social.py /media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/output/SM_fits_local_7-26-24/ "local"
+# python3 /media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/scripts/runall_social.py /media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/output/SM_fits_prolific_8-9-24/ "prolific"

@@ -25,8 +25,12 @@ function all_pred_errors = get_prediction_errors()
             schedule = readtable('../schedules/sm_distributed_schedule1_CB.csv');
         end
         % get like trials that were H5
-        like_h5 = unique(schedule.game_number(~schedule.dislike_room & strcmp(schedule.game_type, 'h6')))+1;
-        dislike_h5 = unique(schedule.game_number(schedule.dislike_room & strcmp(schedule.game_type, 'h6')))+1;
+%         like_h5 = unique(schedule.game_number(~schedule.dislike_room & strcmp(schedule.game_type, 'h6')))+1;
+%         dislike_h5 = unique(schedule.game_number(schedule.dislike_room & strcmp(schedule.game_type, 'h6')))+1;
+        
+%         h1 = unique(schedule.game_number(strcmp(schedule.game_type, 'h1')))+1;
+%         h5 = unique(schedule.game_number(strcmp(schedule.game_type, 'h6')))+1;
+
 
         pred_errors = NaN(560, 1);
         like_errors = reshape(like_output.pred_errors, [], 1);

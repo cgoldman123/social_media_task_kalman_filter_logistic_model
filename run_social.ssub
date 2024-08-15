@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 #SBATCH --partition=c3
-#SBATCH --ntasks=1
-#SBATCH --mem=20000
+#SBATCH --ntasks=4
+#SBATCH --mem=120000
 #SBATCH --nodes=1
 #SBATCH --begin=now
 #SBATCH --chdir=/media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/scripts/
