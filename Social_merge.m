@@ -10,6 +10,16 @@ function [all_data, subj_mapping, flag_ids] = Social_merge(ids, files, room_type
     % Data is considered valid if it is
     % complete and there are no practice effects (i.e., the subject did not
     % previously start the game). Files are in date order.
+    
+    if ispc
+        root = 'L:/';
+    else
+        root = '/media/labs/';
+    end
+    
+    
+    
+    
     all_data = cell(1, numel(ids)); 
     flag_ids = {};
     good_index = [];
@@ -30,24 +40,26 @@ function [all_data, subj_mapping, flag_ids] = Social_merge(ids, files, room_type
         for j = 1:numel(file)
             if ~success
                 if strcmp(study,'local')
-                    % determine if cb=1 or cb=2
+                    % determine if cb=1 or cb=2; CB1 contains like first,
+                    % CB2 contains dislike first
                     filename = file{j};
                     if contains(filename, '_R1-')
-                        schedule = readtable('../schedules/sm_distributed_schedule1.csv');
+                        schedule = readtable([root 'rsmith/wellbeing/tasks/SocialMedia/schedules/sm_distributed_schedule_CB1.csv']);
                         cb = 1;
-                    else
-                        schedule = readtable('../schedules/sm_distributed_schedule1_CB.csv');
+                    else % CB2 will contain _R3-
+                        schedule = readtable([root 'rsmith/wellbeing/tasks/SocialMedia/schedules/sm_distributed_schedule_CB2.csv']);
                         cb = 2;
                     end
                     [all_data{i},started_this_game] = Social_local_parse(filename, schedule, room_type, study);  
                 elseif strcmp(study,'prolific')
-                    % determine if cb=1 or cb=2
+                    % determine if cb=1 or cb=2; CB1 contains like first,
+                    % CB2 contains dislike first
                     filename = file{j};
                     if contains(filename, '_CB_')
                         cb = 2;
-                        schedule = readtable('../schedules/sm_distributed_schedule1_CB.csv');
+                        schedule = readtable([root 'rsmith/wellbeing/tasks/SocialMedia/schedules/sm_distributed_schedule_CB2.csv']);
                     else
-                        schedule = readtable('../schedules/sm_distributed_schedule1.csv');
+                        schedule = readtable([root 'rsmith/wellbeing/tasks/SocialMedia/schedules/sm_distributed_schedule_CB1.csv']);
                         cb = 1;
                     end
                     % note how we still use social_local_parse for prolific

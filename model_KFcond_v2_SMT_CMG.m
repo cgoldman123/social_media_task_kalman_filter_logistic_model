@@ -71,7 +71,7 @@ function model_output = model_KFcond_v2_SMT_CMG(params, free_choices, rewards, m
                 mu2(t+1) = mu2(t); 
             else
                 % update LR
-                alpha1(t+1) = 1/( 1/(alpha1(t) + alpha_d) ); 
+                alpha1(t+1) = 1/( 1/(alpha1(t) + alpha_d) ); % why does first bandit LR change
                 alpha2(t+1) = 1/( 1/(alpha2(t) + alpha_d) + 1 );
                 exp_vals(t,g) = mu2(t);
                 mu1(t+1) = mu1(t);

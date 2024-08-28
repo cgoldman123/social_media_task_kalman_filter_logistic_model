@@ -10,7 +10,7 @@ dbstop if error
 if ispc
     root = 'L:/';
     run=1;
-    experiment = 'prolific'; % indicate local or prolific
+    experiment = 'local'; % indicate local or prolific
     room = 'Like';
     model = 'kf';
     results_dir = sprintf([root 'rsmith/lab-members/cgoldman/Wellbeing/social_media/output/%s/%s/'], experiment, model);

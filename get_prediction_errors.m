@@ -20,9 +20,9 @@ function all_pred_errors = get_prediction_errors()
             throw(exception);
         end
         if like_output.cb == 1
-            schedule = readtable('../schedules/sm_distributed_schedule1.csv');
+            schedule = readtable('../schedules/sm_distributed_schedule_CB1.csv');
         else
-            schedule = readtable('../schedules/sm_distributed_schedule1_CB.csv');
+            schedule = readtable('../schedules/sm_distributed_schedule_CB2.csv');
         end
         % get like trials that were H5
 %         like_h5 = unique(schedule.game_number(~schedule.dislike_room & strcmp(schedule.game_type, 'h6')))+1;
