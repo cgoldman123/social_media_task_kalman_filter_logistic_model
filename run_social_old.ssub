@@ -2,7 +2,7 @@
 #
 #SBATCH --partition=c2_cpu
 #SBATCH --ntasks=1
-#SBATCH --mem=12000
+#SBATCH --mem=100000
 #SBATCH --nodes=1
 #SBATCH --workdir=/media/labs/rsmith/wellbeing/tasks/SocialMedia/scripts/
 #SBATCH --begin=now

@@ -7,8 +7,7 @@ experiment = sys.argv[2]
 ssub_path = '/media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/scripts/run_social.ssub'
 
 room_type = ["Like", "Dislike"]
-model_type = ["kf","logistic"]
-model_type = ["kf"]
+model_type = ["kf"] # kf or logistic
 for room in room_type:
     for model in model_type:
 
@@ -33,4 +32,4 @@ for room in room_type:
         print(f"SUBMITTED JOB [{jobname}]")
 
 # remember that logistic model output will save in rsmith/wellbeing/tasks/SocialMedia/output!
-# python3 /media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/scripts/runall_social.py /media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/output/SM_fits_prolific_8-9-24/ "prolific"
+# python3 /media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/scripts/runall_social.py /media/labs/rsmith/lab-members/cgoldman/Wellbeing/social_media/output/SM_fits_prolific_9-10-24/ "prolific"

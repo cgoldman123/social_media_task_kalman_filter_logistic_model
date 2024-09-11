@@ -1,4 +1,4 @@
-function model_output = model_KFcond_v2_SMT_CMG(params, free_choices, rewards, mdp)
+function model_output = model_KFcond_v3_CMG(params, free_choices, rewards, mdp)
 %     # This model has:
 %     #   Kalman filter inference
 %     #   Info bonus
@@ -27,7 +27,7 @@ function model_output = model_KFcond_v2_SMT_CMG(params, free_choices, rewards, m
 
     alpha_start = params.alpha_start;
     alpha_inf = params.alpha_inf;
-    mu0 = params.mu0; % initial value. can fix to 50
+    %mu0 = params.mu0; % initial value. can fix to 50
     info_bonuses = [params.info_bonus_h1 params.info_bonus_h5];       
     decision_noises = [params.dec_noise_h1_13 params.dec_noise_h5_13];
     biases = [params.side_bias_h1 params.side_bias_h5];
@@ -47,8 +47,10 @@ function model_output = model_KFcond_v2_SMT_CMG(params, free_choices, rewards, m
     
     for g=1:G  % loop over games
         % values
-        mu1 = [mu0 nan nan nan nan];
-        mu2 = [mu0 nan nan nan nan];
+%         mu1 = [mu0 nan nan nan nan];
+%         mu2 = [mu0 nan nan nan nan];
+        mu1 = [rewards(1,g) nan nan nan nan];
+        mu2 = [rewards(1,g) nan nan nan nan];
 
         % learning rates 
         alpha1 = [alpha0 nan nan nan nan]; 

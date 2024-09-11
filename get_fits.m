@@ -22,7 +22,7 @@ function varargout = get_fits(root,study,model,room_type, results_dir)
             end
         end
     elseif strcmp(study, 'prolific')
-        for cb = {'_CB', ''}
+        for cb = {'_CB', ''}   %for cb = {'', '_CB'}
             sink = fullfile(root, ['NPC/DataSink/StimTool_Online/WB_Social_Media' cb{:}]);
             datadir = dir(sink);
             sDir = datadir(arrayfun(@(n) contains(n.name, 'social_media'), datadir));
@@ -84,6 +84,12 @@ function varargout = get_fits(root,study,model,room_type, results_dir)
     else
         %% Clean up files and concatenate for fitting
         timestamp = datestr(datetime('now'), 'mm_dd_yy_THH-MM-SS');
+        
+        
+        
+        % COMMENT THIS OUT TO RUN EVERYONE
+        subs = subs(:,1:5);
+        files = files(:,1:5);
         [big_table, subj_mapping, flag] = Social_merge(subs, files, room_type, study);
         
         % ensure that no subject in big_table has repeated data

@@ -7,10 +7,6 @@ function [fits, model_output] = fit_extended_model(formatted_file, result_dir)
     fprintf('Using this formatted_file: %s\n',formatted_file);
 
     %formatted_file = 'L:\rsmith\wellbeing\tasks\SocialMedia\output\prolific\kf\beh_Dislike_06_03_24_T16-03-52.csv';  %% remember to comment out
-    %addpath(['L:/rsmith/all-studies/core/matjags']);
-    %addpath(['L:/rsmith/all-studies/models/extended-horizon']);
-    %addpath('C:\Users\CGoldman\AppData\Local\Programs\JAGS\JAGS-4.3.1\x64\bin');
-    %addpath('C:\Users\CGoldman\AppData\Local\Programs\JAGS');
     addpath([root 'rsmith/lab-members/cgoldman/general/']);
     %addpath('~/Documents/MATLAB/MatJAGS/');
 
@@ -160,12 +156,17 @@ function [fits, model_output] = fit_extended_model(formatted_file, result_dir)
         root = '/media/labs/';
     end
     
-    currdir = [root 'rsmith/all-studies/models/extended-horizon/'];
+%     currdir = [root 'rsmith/all-studies/models/extended-horizon/'];
+    currdir= pwd;
+   % model = fullfile(currdir, 'model_KFcond_v3_CMG.txt');
+    model = fullfile(currdir, 'model_KFcond_v2_SMT');
     
-    fprintf( 'Running JAGS\n' );
+    fprintf( 'Running JAGS to fit\n' );
+    fprintf('Using this model file: %s\n',model);
+
     [samples, stats ] = matjags_cmg( ...
         datastruct, ...
-        fullfile(currdir, 'model_KFcond_v2_SMT'), ...
+        model, ...
         init0, ...
         'doparallel' , doparallel, ...
         'nchains', nchains,...
@@ -192,7 +193,7 @@ function [fits, model_output] = fit_extended_model(formatted_file, result_dir)
     stats.mean.BB = squeeze(mean(mean(samples.BB(:,N:end,:,:,:),2),1));
     stats.mean.AA = squeeze(mean(mean(samples.AA(:,N:end,:,:,:),2),1));
 
-    stats.mean.mu0 = squeeze(mean(mean(samples.mu0(:,N:end,:,:),2),1));
+ %   stats.mean.mu0 = squeeze(mean(mean(samples.mu0(:,N:end,:,:),2),1));
     stats.mean.alpha_start = squeeze(mean(mean(samples.alpha_start(:,N:end,:,:),2),1));
     stats.mean.alpha_inf = squeeze(mean(mean(samples.alpha_inf(:,N:end,:,:),2),1));
     stats.mean.alpha0 = squeeze(mean(mean(samples.alpha0(:,N:end,:,:),2),1));
@@ -207,9 +208,7 @@ function [fits, model_output] = fit_extended_model(formatted_file, result_dir)
         fits(si).info_bonus_h1 = stats.mean.AA(si, 1);
         fits(si).info_bonus_h5 = stats.mean.AA(si, 2);
 
-        %fits(si).dec_noise_h1_22 = stats.mean.BB(si, 1);
         fits(si).dec_noise_h1_13 = stats.mean.BB(si, 1);
-        %fits(si).dec_noise_h6_22 = stats.mean.BB(si, 3);
         fits(si).dec_noise_h5_13 = stats.mean.BB(si, 2);
 
         fits(si).alpha_start = stats.mean.alpha_start(si);
@@ -231,8 +230,84 @@ function [fits, model_output] = fit_extended_model(formatted_file, result_dir)
         mdp.T = T; % num forced choices
         mdp.G = 40; % game length
         
-        model_output(si).results = model_KFcond_v2_SMT_CMG(params,free_choices, rewards,mdp);        
+        % note that mu2 == right bandit ==  c=2 == free choice = 1
+
+        
+        model_output(si).results = model_KFcond_v2_SMT_CMG(params,free_choices, rewards,mdp);    
+        fits(si).average_action_prob = mean(model_output(si).results.action_probs);
+        fits(si).model_acc = sum(model_output(si).results.action_probs > .5) / mdp.G;
+        
     end
+    
+    
+    % fit simulated behavior
+    % Loop through the indices and stack the results into c5
+    for si = 1:length({sub.subjectID})
+        simmed_c5(si, :) = model_output(si).results.simmed_free_choices;
+    end
+    
+    
+    datastruct = struct(...
+        'C1', C1, 'nC1', nC1, ...
+        'NS', NS, 'G',  G,  'T',   T, ...
+        'dI', dI, 'a',  a,  'c5',  simmed_c5, 'r', r, 'result_dir', result_dir);
+    
+    
+    % note old social media model model_KFcond_v2_SMT
+    fprintf( 'Running JAGS to fit simulated behavior! \n' );
+    [simmed_samples, simmed_stats ] = matjags_cmg( ...
+        datastruct, ...
+        model, ...
+        init0, ...
+        'doparallel' , doparallel, ...
+        'nchains', nchains,...
+        'nburnin', nburnin,...
+        'nsamples', nsamples, ...
+        'thin', thin, ...
+        'monitorparams', ...
+        {'a0' 'b0' 'alpha_start' 'alpha0' 'alpha_d' ...
+        'a_inf' 'b_inf' 'alpha_inf' ...
+        'mu0_mean' 'mu0_sigma' 'mu0' ...
+        'AA_mean' 'AA_sigma' 'AA' ...
+        'SB_mean' 'SB_sigma' 'SB' ...
+        'BB_mean' 'BB' ...
+        }, ...
+        'savejagsoutput' , 1 , ...
+        'verbosity' , 1 , ...
+        'cleanup' , 1  );
+    toc
+    
+    N = 1;
+
+    simmed_stats.mean.SB = squeeze(mean(mean(simmed_samples.SB(:,N:end,:,:,:),2),1));
+    simmed_stats.mean.BB = squeeze(mean(mean(simmed_samples.BB(:,N:end,:,:,:),2),1));
+    simmed_stats.mean.AA = squeeze(mean(mean(simmed_samples.AA(:,N:end,:,:,:),2),1));
+
+    simmed_stats.mean.mu0 = squeeze(mean(mean(simmed_samples.mu0(:,N:end,:,:),2),1));
+    simmed_stats.mean.alpha_start = squeeze(mean(mean(simmed_samples.alpha_start(:,N:end,:,:),2),1));
+    simmed_stats.mean.alpha_inf = squeeze(mean(mean(simmed_samples.alpha_inf(:,N:end,:,:),2),1));
+    simmed_stats.mean.alpha0 = squeeze(mean(mean(simmed_samples.alpha0(:,N:end,:,:),2),1));
+    simmed_stats.mean.alpha_d = squeeze(mean(mean(simmed_samples.alpha_d(:,N:end,:,:),2),1));
+    
+    
+    
+    for si = 1:length({sub.subjectID})        
+        fits(si).simfit_info_bonus_h1 = simmed_stats.mean.AA(si, 1);
+        fits(si).simfit_info_bonus_h5 = simmed_stats.mean.AA(si, 2);
+
+        fits(si).simfit_dec_noise_h1_13 = simmed_stats.mean.BB(si, 1);
+        fits(si).simfit_dec_noise_h5_13 = simmed_stats.mean.BB(si, 2);
+
+        fits(si).simfit_alpha_start = simmed_stats.mean.alpha_start(si);
+        fits(si).simfit_alpha_inf = simmed_stats.mean.alpha_inf(si);  
+        
+        fits(si).simfit_side_bias_h1 = simmed_stats.mean.SB(si, 1);
+        fits(si).simfit_side_bias_h5 = simmed_stats.mean.SB(si, 2);
+
+
+        fits(si).simfit_mu0 = simmed_stats.mean.mu0(si); %R0 - prior over reward
+    end
+    
     
     fits = struct2table(fits);
 end
