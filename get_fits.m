@@ -88,8 +88,8 @@ function varargout = get_fits(root,study,model,room_type, results_dir)
         
         
         % COMMENT THIS OUT TO RUN EVERYONE
-        subs = subs(:,1:5);
-        files = files(:,1:5);
+         subs = subs(:,1:1);
+         files = files(:,1:1);
         [big_table, subj_mapping, flag] = Social_merge(subs, files, room_type, study);
         
         % ensure that no subject in big_table has repeated data
